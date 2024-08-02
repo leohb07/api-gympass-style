@@ -8,7 +8,6 @@ interface IRegisterUseCase {
   password: string
 }
 
-
 export class RegisterUseCase {
   constructor(private readonly usersRepository: UsersRepository) { }
 
@@ -21,6 +20,10 @@ export class RegisterUseCase {
       throw new UserAlreadyExistsError();
     }
 
-    await this.usersRepository.create({ name, email, password_hash });
+    const user = await this.usersRepository.create({ name, email, password_hash });
+
+    return {
+      user,
+    }
   }
 }
