@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { Prisma, User } from "@prisma/client";
 
 export class PrismaUsersRepository implements UsersRepository {
-  async create(data: Prisma.UserCreateInput) {
+  async create(data: Prisma.UserCreateInput): Promise<User> {
     const response = await prisma.user.create({
       data,
     });
@@ -11,12 +11,12 @@ export class PrismaUsersRepository implements UsersRepository {
     return response;
   }
 
-  async findByEmail(email: string) {
+  async findByEmail(email: string): Promise<User | null> {
     const response = await prisma.user.findUnique({
       where: {
         email,
-      }
-    })
+      },
+    });
 
     return response;
   }
@@ -25,8 +25,8 @@ export class PrismaUsersRepository implements UsersRepository {
     const response = await prisma.user.findUnique({
       where: {
         id,
-      }
-    })
+      },
+    });
 
     return response;
   }
