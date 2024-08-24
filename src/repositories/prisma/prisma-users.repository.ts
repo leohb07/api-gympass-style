@@ -1,14 +1,14 @@
-import { UsersRepository } from "@/domain/users.repository";
-import { prisma } from "@/lib/prisma";
-import { Prisma, User } from "@prisma/client";
+import { UsersRepository } from '@/domain/users.repository'
+import { prisma } from '@/lib/prisma'
+import { Prisma, User } from '@prisma/client'
 
 export class PrismaUsersRepository implements UsersRepository {
   async create(data: Prisma.UserCreateInput): Promise<User> {
     const response = await prisma.user.create({
       data,
-    });
+    })
 
-    return response;
+    return response
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -16,9 +16,9 @@ export class PrismaUsersRepository implements UsersRepository {
       where: {
         email,
       },
-    });
+    })
 
-    return response;
+    return response
   }
 
   async findById(id: string): Promise<User | null> {
@@ -26,8 +26,8 @@ export class PrismaUsersRepository implements UsersRepository {
       where: {
         id,
       },
-    });
+    })
 
-    return response;
+    return response
   }
 }

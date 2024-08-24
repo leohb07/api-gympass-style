@@ -1,7 +1,7 @@
-import { CheckInsRepository } from "@/domain/check-ins.repository";
-import { prisma } from "@/lib/prisma";
-import { CheckIn, Prisma } from "@prisma/client";
-import dayjs from "dayjs";
+import { CheckInsRepository } from '@/domain/check-ins.repository'
+import { prisma } from '@/lib/prisma'
+import { CheckIn, Prisma } from '@prisma/client'
+import dayjs from 'dayjs'
 
 export class PrismaCheckInsRepository implements CheckInsRepository {
   async save(checkIn: CheckIn): Promise<CheckIn> {
@@ -10,17 +10,17 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
         id: checkIn.id,
       },
       data: checkIn,
-    });
+    })
 
-    return response;
+    return response
   }
 
   async create(data: Prisma.CheckInUncheckedCreateInput): Promise<CheckIn> {
     const response = await prisma.checkIn.create({
       data,
-    });
+    })
 
-    return response;
+    return response
   }
 
   async findById(id: string): Promise<CheckIn | null> {
@@ -28,9 +28,9 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       where: {
         id,
       },
-    });
+    })
 
-    return response;
+    return response
   }
 
   async countByUserId(userId: string): Promise<number> {
@@ -38,14 +38,14 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       where: {
         user_id: userId,
       },
-    });
+    })
 
-    return response;
+    return response
   }
 
   async findByUserOnDate(userId: string, date: Date): Promise<CheckIn | null> {
-    const startOfTheDay = dayjs(date).startOf("date");
-    const endOfTheDay = dayjs(date).endOf("date");
+    const startOfTheDay = dayjs(date).startOf('date')
+    const endOfTheDay = dayjs(date).endOf('date')
 
     const response = await prisma.checkIn.findFirst({
       where: {
@@ -55,9 +55,9 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
           lte: endOfTheDay.toDate(),
         },
       },
-    });
+    })
 
-    return response;
+    return response
   }
 
   async findManyByUserId(userId: string, page: number): Promise<CheckIn[]> {
@@ -67,8 +67,8 @@ export class PrismaCheckInsRepository implements CheckInsRepository {
       },
       take: 20, // 20 items
       skip: (page - 1) * 20,
-    });
+    })
 
-    return response;
+    return response
   }
 }

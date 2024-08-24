@@ -1,28 +1,28 @@
-import { CheckIn } from "@prisma/client";
-import { InvalidCredentialsError } from "./errors/invalid-credentials.error";
-import { CheckInsRepository } from "@/domain/check-ins.repository";
-import { GymsRepository } from "@/domain/gyms.repository";
-import { ResourceNotFoundError } from "./errors/resource-not-found.error";
-import { getDistanceBetweenCoordinates } from "@/utils/get-distance-between-coordinates.util";
-import { MaxDistanceError } from "./errors/max-distance.error";
-import { MaxNumberOfCheckInsError } from "./errors/max-number-of-check-ins.error";
+import { CheckIn } from '@prisma/client'
+import { InvalidCredentialsError } from './errors/invalid-credentials.error'
+import { CheckInsRepository } from '@/domain/check-ins.repository'
+import { GymsRepository } from '@/domain/gyms.repository'
+import { ResourceNotFoundError } from './errors/resource-not-found.error'
+import { getDistanceBetweenCoordinates } from '@/utils/get-distance-between-coordinates.util'
+import { MaxDistanceError } from './errors/max-distance.error'
+import { MaxNumberOfCheckInsError } from './errors/max-number-of-check-ins.error'
 
 interface CheckInUseCaseRequest {
-  userId: string;
-  gymId: string;
-  userLatitude: number;
-  userLongitude: number;
+  userId: string
+  gymId: string
+  userLatitude: number
+  userLongitude: number
 }
 
 interface CheckInUseCaseResponse {
-  checkIn: CheckIn;
+  checkIn: CheckIn
 }
 
 export class CheckInUseCase {
   constructor(
     private checkInsRepository: CheckInsRepository,
     private gymsRepository: GymsRepository,
-  ) { }
+  ) {}
 
   async execute({
     gymId,
@@ -30,10 +30,10 @@ export class CheckInUseCase {
     userLongitude,
     userLatitude,
   }: CheckInUseCaseRequest): Promise<CheckInUseCaseResponse> {
-    const gym = await this.gymsRepository.findById(gymId);
+    const gym = await this.gymsRepository.findById(gymId)
 
     if (!gym) {
-      throw new ResourceNotFoundError();
+      throw new ResourceNotFoundError()
     }
 
     const distance = getDistanceBetweenCoordinates(
@@ -41,28 +41,31 @@ export class CheckInUseCase {
       {
         latitude: gym.latitude.toNumber(),
         longitude: gym.longitude.toNumber(),
-      }
-    );
+      },
+    )
 
-    const MAX_DISTANCE_IN_KILOMETERS = 0.1;
+    const MAX_DISTANCE_IN_KILOMETERS = 0.1
 
     if (distance > MAX_DISTANCE_IN_KILOMETERS) {
-      throw new MaxDistanceError();
+      throw new MaxDistanceError()
     }
 
-    const checkInOnSameDay = await this.checkInsRepository.findByUserOnDate(userId, new Date());
+    const checkInOnSameDay = await this.checkInsRepository.findByUserOnDate(
+      userId,
+      new Date(),
+    )
 
     if (checkInOnSameDay) {
-      throw new MaxNumberOfCheckInsError();
+      throw new MaxNumberOfCheckInsError()
     }
 
     const checkIn = await this.checkInsRepository.create({
       gym_id: gymId,
       user_id: userId,
-    });
+    })
 
     if (!checkIn) {
-      throw new InvalidCredentialsError();
+      throw new InvalidCredentialsError()
     }
 
     return {
