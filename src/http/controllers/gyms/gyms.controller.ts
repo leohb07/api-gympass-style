@@ -4,7 +4,7 @@ import { createGymValidationBody } from "./validations/create-gym.validation";
 import { makeSearchGymsUseCase } from "@/usecases/factories/make-search-gym.usecase";
 import { searchGymsValidationQueryParams } from "./validations/search-gyms.validation";
 import { makeNearbyGymsUseCase } from "@/usecases/factories/make-nearby-gym.usecase";
-import { searchNearbyGymsValidationBody } from "./validations/search-nearby-gyms.validation";
+import { searchNearbyGymsValidationQueryParams } from "./validations/search-nearby-gyms.validation";
 
 export class GymsController {
   async create(request: FastifyRequest, reply: FastifyReply) {
@@ -40,7 +40,8 @@ export class GymsController {
   }
 
   async searchNearby(request: FastifyRequest, reply: FastifyReply) {
-    const { latitude, longitude } = searchNearbyGymsValidationBody(request);
+    const { latitude, longitude } =
+      searchNearbyGymsValidationQueryParams(request);
 
     const nearbyGymsUseCase = makeNearbyGymsUseCase();
 

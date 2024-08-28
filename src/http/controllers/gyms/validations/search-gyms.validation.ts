@@ -7,5 +7,5 @@ export function searchGymsValidationQueryParams(request: FastifyRequest) {
     page: z.coerce.number().min(1).default(1),
   });
 
-  return schema.parse(request.body);
+  return schema.parse(request.query);
 }
