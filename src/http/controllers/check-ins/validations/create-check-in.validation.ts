@@ -19,5 +19,5 @@ export function createCheckInValidationBody(request: FastifyRequest) {
     }),
   });
 
-  return schema.parse(request);
+  return schema.parse(request.body);
 }
