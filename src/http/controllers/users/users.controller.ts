@@ -61,7 +61,7 @@ export class UsersController {
       });
 
       const token = await reply.jwtSign(
-        {},
+        { role: user.role },
         {
           sign: {
             sub: user.id,
@@ -70,18 +70,18 @@ export class UsersController {
       );
 
       const refreshToken = await reply.jwtSign(
-        {},
+        { role: user.role },
         {
           sign: {
             sub: user.id,
-            expiresIn: '7d',
+            expiresIn: "7d",
           },
         },
       );
 
       return reply
-        .setCookie('refreshToken', refreshToken, {
-          path: '/',
+        .setCookie("refreshToken", refreshToken, {
+          path: "/",
           secure: true,
           sameSite: true,
           httpOnly: true,
@@ -90,7 +90,6 @@ export class UsersController {
         .send({
           token,
         });
-
     } catch (err) {
       if (err instanceof InvalidCredentialsError) {
         return reply.status(400).send({
@@ -103,10 +102,12 @@ export class UsersController {
   }
 
   async refresh(request: FastifyRequest, reply: FastifyReply) {
-    await request.jwtVerify({ onlyCookie: true })
+    await request.jwtVerify({ onlyCookie: true });
+
+    const { role } = request.user;
 
     const token = await reply.jwtSign(
-      {},
+      { role },
       {
         sign: {
           sub: request.user.sub,
@@ -115,18 +116,18 @@ export class UsersController {
     );
 
     const refreshToken = await reply.jwtSign(
-      {},
+      { role },
       {
         sign: {
           sub: request.user.sub,
-          expiresIn: '7d',
+          expiresIn: "7d",
         },
       },
     );
 
     return reply
-      .setCookie('refreshToken', refreshToken, {
-        path: '/',
+      .setCookie("refreshToken", refreshToken, {
+        path: "/",
         secure: true,
         sameSite: true,
         httpOnly: true,
@@ -134,7 +135,6 @@ export class UsersController {
       .status(200)
       .send({
         token,
-      })
+      });
   }
-
 }
