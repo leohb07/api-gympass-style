@@ -8,7 +8,8 @@ export async function usersRoutes(app: FastifyInstance) {
   app.post("/users", usersController.register);
   app.post("/sessions", usersController.authenticate);
 
-  // Authenticated
+  app.patch("/token/refresh", usersController.refresh);
+
   app.get(
     "/me",
     { onRequest: [verifyJwtMiddleware] },
